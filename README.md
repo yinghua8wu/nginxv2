@@ -3,6 +3,8 @@
 google-mirror:https://mirror-starjason.cloud.okteto.net  
 
 
+kuanfinn/caddyandv:oqr 
+
 服务器地址（address）：XXX.cloud.okteto.net    
 端口：443    
 UUID/密码：fc784596-c17d-46da-bbb4-7d5142b8866a    

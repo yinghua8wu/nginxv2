@@ -1,0 +1,142 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  annotations:
+    deployment.kubernetes.io/revision: "2"
+    dev.okteto.com/last-updated: 2020-04-09T06:57:53
+  creationTimestamp: "2020-04-01T12:52:11Z"
+  generation: 11
+  labels:
+    dev.okteto.com/container: mirror
+  name: mirror
+  namespace: starjason
+  resourceVersion: "37831369"
+  selfLink: /apis/extensions/v1beta1/namespaces/starjason/deployments/mirror
+  uid: e07f8f97-4978-4274-a160-28a85e77d2fe
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 2
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      dev.okteto.com/container: mirror
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      annotations:
+        dev.okteto.com/timestamp: 2020.04.09_06-57-53
+      creationTimestamp: null
+      labels:
+        dev.okteto.com/container: mirror
+    spec:
+      containers:
+      - image: starjason/docker-google-mirror
+        imagePullPolicy: Always
+        name: mirror
+        ports:
+        - containerPort: 80
+          protocol: TCP
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+status:
+  availableReplicas: 2
+  conditions:
+  - lastTransitionTime: "2020-04-01T12:57:24Z"
+    lastUpdateTime: "2020-04-09T06:58:02Z"
+    message: ReplicaSet "mirror-7775b98c87" has successfully progressed.
+    reason: NewReplicaSetAvailable
+    status: "True"
+    type: Progressing
+  - lastTransitionTime: "2020-04-18T07:33:09Z"
+    lastUpdateTime: "2020-04-18T07:33:09Z"
+    message: Deployment has minimum availability.
+    reason: MinimumReplicasAvailable
+    status: "True"
+    type: Available
+  observedGeneration: 11
+  readyReplicas: 2
+  replicas: 2
+  updatedReplicas: 2
+  
+  
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    dev.okteto.com/auto-ingress: "true"
+  creationTimestamp: "2020-04-01T13:28:26Z"
+  labels:
+    dev.okteto.com/container: mirror
+    velero.io/backup-name: total-cluster-migration-1
+    velero.io/restore-name: total-restore-1
+  name: mirror
+  namespace: starjason
+  resourceVersion: "666472"
+  selfLink: /api/v1/namespaces/starjason/services/mirror
+  uid: f705a450-919b-48ea-a02b-1b46081f1ed4
+spec:
+  clusterIP: 10.132.83.180
+  ports:
+  - name: mirror
+    port: 80
+    protocol: TCP
+    targetPort: 80
+  selector:
+    dev.okteto.com/container: mirror
+  sessionAffinity: None
+  type: ClusterIP
+status:
+  loadBalancer: {}
+  
+  
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  annotations:
+    dev.okteto.com/auto-ingress: "true"
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/limit-connections: "20"
+    nginx.ingress.kubernetes.io/limit-rpm: "200"
+    nginx.ingress.kubernetes.io/limit-rps: "20"
+  creationTimestamp: "2020-04-01T12:56:57Z"
+  generation: 1
+  labels:
+    velero.io/backup-name: total-cluster-migration-1
+    velero.io/restore-name: total-restore-1
+  name: okteto-mirror
+  namespace: starjason
+  resourceVersion: "26557341"
+  selfLink: /apis/extensions/v1beta1/namespaces/starjason/ingresses/okteto-mirror
+  uid: d8fb2b3f-5d99-448a-944d-ce3c8eda1e4b
+spec:
+  rules:
+  - host: mirror-starjason.cloud.okteto.net
+    http:
+      paths:
+      - backend:
+          serviceName: mirror
+          servicePort: 80
+        path: /
+  tls:
+  - hosts:
+    - mirror-starjason.cloud.okteto.net
+status:
+  loadBalancer:
+    ingress:
+    - ip: 104.155.138.215
+    - ip: 104.197.238.82
+    - ip: 104.198.241.5
+    - ip: 35.224.92.98
